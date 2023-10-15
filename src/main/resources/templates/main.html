@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<!-- 상단 로고 및 로그인/회원가입 창 -->
+<div class="container-fluid bg-dark text-white py-2">
+    <div class="container d-flex justify-content-between align-items-center">
+        <!-- 로고 (메인 페이지로 이동) -->
+        <div>
+            <a href="/main">
+                <img src="your-logo.png" alt="로고" style="height: 40px;">
+            </a>
+        </div>
+        <!-- 로그인/회원가입 링크 -->
+        <div>
+            <a href="/login" class="btn btn-primary mr-2">로그인</a>
+            <a href="/members/new" class="btn btn-secondary">회원가입</a>
+        </div>
+    </div>
+</div>
+<!-- 메뉴 박스 -->
+<div class="container mt-4 text-center">
+    <!-- 메뉴 항목 -->
+    <div class="row justify-content-center">
+        <div class="col-md-2">
+            <a href="#" class="menu-link">뮤지컬</a>
+        </div>
+        <div class="col-md-2">
+            <a href="#" class="menu-link">콘서트</a>
+        </div>
+        <div class="col-md-2">
+            <a href="#" class="menu-link">연극</a>
+        </div>
+        <div class="col-md-2">
+            <a href="#" class="menu-link">클래식/무용</a>
+        </div>
+        <div class="col-md-2">
+            <a href="#" class="menu-link">스포츠</a>
+        </div>
+    </div>
+</body>
+</html>
