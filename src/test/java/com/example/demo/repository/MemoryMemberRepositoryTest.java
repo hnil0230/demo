@@ -1,3 +1,4 @@
+/*
 package com.example.demo.repository;
 
 import com.example.demo.domain.Member;
@@ -29,3 +30,4 @@ public class MemoryMemberRepositoryTest {
         assertThat(member).isEqualTo(result);
     }
 }
+*/

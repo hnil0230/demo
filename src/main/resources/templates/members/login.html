@@ -11,13 +11,13 @@
     <div class="container d-flex justify-content-between align-items-center">
         <!-- 로고 (메인 페이지로 이동) -->
         <div>
-            <a href="/main">
+            <a href="/">
                 <img src="your-logo.png" alt="로고" style="height: 40px;">
             </a>
         </div>
         <!-- 로그인/회원가입 링크 -->
         <div>
-            <a href="/login" class="btn btn-primary mr-2">로그인</a>
+            <a href="/members/login" class="btn btn-primary mr-2">로그인</a>
             <a href="/members/new" class="btn btn-secondary">회원가입</a>
         </div>
     </div>
@@ -45,15 +45,17 @@
 <!-- 로그인 폼 -->
 <div class="container mt-4">
     <h2 class="text-center">로그인</h2>
-    <form th:action="/members/login" method="post" style="max-width: 300px; margin: 0 auto;">
+    <form th:action="@{/members/login}" method="post" style="max-width: 300px; margin: 0 auto;">
+
         <div class="form-group">
-            <input type="text" id="id" name="id" class="form-control" placeholder="아이디" required>
+            <input type="text" id="email" name="MemberEmail" class="form-control" placeholder="이메일" required>
         </div>
         <div class="form-group">
-            <input type="password" id="pw" name="pw" class="form-control" placeholder="비밀번호" required>
+            <input type="password" id="pw" name="MemberPassword" class="form-control" placeholder="비밀번호" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">로그인</button>
     </form>
+</div>
 </div>
 </body>
 </html>

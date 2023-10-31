@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+session 값 확인 : <p th:text="${session.loginEmail}"></p>
 <!-- 상단 로고 및 로그인/회원가입 창 -->
 <div class="container-fluid bg-dark text-white py-2">
     <div class="container d-flex justify-content-between align-items-center">
@@ -17,7 +18,7 @@
         </div>
         <!-- 로그인/회원가입 링크 -->
         <div>
-            <a href="/login" class="btn btn-primary mr-2">로그인</a>
+            <a href="/members/login" class="btn btn-primary mr-2">로그인</a>
             <a href="/members/new" class="btn btn-secondary">회원가입</a>
         </div>
     </div>

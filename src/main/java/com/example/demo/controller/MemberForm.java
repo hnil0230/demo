@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 public class MemberForm {
-    private String id;
+    /*private String id;
     private String pw;
     private String name;
     private String email;
@@ -36,5 +36,5 @@ public class MemberForm {
 
     public void setEmail(String email) {
         this.email = email;
-    }
+    }*/
 }

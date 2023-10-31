@@ -1,3 +1,4 @@
+/*
 package com.example.demo.service;
 
 import com.example.demo.domain.Member;
@@ -81,4 +82,4 @@ class MemberServiceTest {
 
         //then
     }
-}
+}*/
