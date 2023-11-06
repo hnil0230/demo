@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 //import com.example.demo.domain.Member;
-import com.example.demo.dto.MemberDTO;
+//import com.example.demo.dto.MemberDTO;
+import com.example.demo.dto.JoinRequest;
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.MemberEntity;
 import com.example.demo.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -9,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,27 +24,36 @@ public class MemberController {
 
 
     @GetMapping("/members/new")
-    public String createFrom() {
+    public String createFrom(Model model) {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+
+        model.addAttribute("joinRequest", new JoinRequest());
         return "members/createAccount";
     }
     @PostMapping("/members/new")
-    public String create(@ModelAttribute MemberDTO memberDTO,  Model model){
-        // 회원가입 요청 처리
-        String errorMessage = memberService.save(memberDTO);
+    public String create(@ModelAttribute JoinRequest joinRequest, Model model, BindingResult bindingResult){
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
 
-        if (errorMessage != null) {
-            // 회원가입 실패
-            model.addAttribute("errorMessage", errorMessage);
+        // Email 중복 체크
+        if(memberService.checkMemberEmailDuplicate(joinRequest.getMemberEmail())) {
+            bindingResult.addError(new FieldError("joinRequest", "MemberEmail", "이메일이 중복됩니다."));
+        }
+
+        // password와 passwordCheck가 같은지 체크
+        if(!joinRequest.getMemberPassword().equals(joinRequest.getMemberPasswordCheck())) {
+            bindingResult.addError(new FieldError("joinRequest", "MemberPasswordCheck", "비밀번호가 일치하지 않습니다."));
+        }
+
+        if(bindingResult.hasErrors()) {
             return "members/createAccount";
         }
-        MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
-        System.out.println("name = " + memberDTO.getMemberName());
-        System.out.println("Email = " + memberDTO.getMemberEmail());
-        System.out.println("password = " + memberDTO.getMemberPassword());
 
-
+        memberService.join(joinRequest);
         return "redirect:/members/login";
     }
+
 
 /*    @GetMapping("/members")
     public String list(Model model) {
@@ -55,8 +68,8 @@ public class MemberController {
     }
 
     @PostMapping("/members/login")
-    public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
-        MemberDTO loginResult = memberService.login(memberDTO);
+    public String login(@ModelAttribute LoginRequest loginRequest, HttpSession session, Model model, BindingResult bindingResult) {
+        MemberEntity loginResult = memberService.login(loginRequest);
         if (loginResult != null){
             // 로그인 성공
             session.setAttribute("loginEmail",loginResult.getMemberEmail());

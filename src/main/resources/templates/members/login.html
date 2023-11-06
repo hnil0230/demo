@@ -5,6 +5,9 @@
     <title>로그인 페이지</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+<div th:if="${errorMessage}" class="alert alert-danger">
+    <p th:text="${errorMessage}"></p>
+</div>
 <body>
 <!-- 상단 로고 및 로그인/회원가입 창 -->
 <div class="container-fluid bg-dark text-white py-2">

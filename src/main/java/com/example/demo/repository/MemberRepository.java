@@ -9,9 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<MemberEntity, Integer> {
+public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
-    Optional<MemberEntity> findByMemberEmail(String MemberEmail);
+    boolean existsByMemberEmail(String MemberEmail);
+    static Optional<MemberEntity> findByMemberEmail(String MemberEmail) {
+        return null;
+    }
+
+    static Optional<MemberEntity> findByMno(Long Mno) {
+        return null;
+    }
+
 
     //MemberEntity save(MemberEntity memberEntity);
     /*Optional<MemberEntity> findByMno(Long Mno);
