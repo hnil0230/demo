@@ -2,13 +2,14 @@ package com.example.demo.controller;
 
 //import com.example.demo.domain.Member;
 //import com.example.demo.dto.MemberDTO;
+
 import com.example.demo.dto.JoinRequest;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.MemberEntity;
 import com.example.demo.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,7 +30,7 @@ public class MemberController {
         model.addAttribute("pageName", "세션 로그인");
 
         model.addAttribute("joinRequest", new JoinRequest());
-        return "members/createAccount";
+        return "/members/createAccount";
     }
     @PostMapping("/members/new")
     public String create(@ModelAttribute JoinRequest joinRequest, Model model, BindingResult bindingResult){
@@ -47,7 +48,7 @@ public class MemberController {
         }
 
         if(bindingResult.hasErrors()) {
-            return "members/createAccount";
+            return "/members/createAccount";
         }
 
         memberService.join(joinRequest);
@@ -63,22 +64,40 @@ public class MemberController {
     }*/
 
     @GetMapping("/members/login")
-    public String loginForm() {
-        return "members/login";
+    public String loginForm(Model model) {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+        model.addAttribute("LoginRequest", new LoginRequest());
+
+        return "/members/login";
     }
 
     @PostMapping("/members/login")
-    public String login(@ModelAttribute LoginRequest loginRequest, HttpSession session, Model model, BindingResult bindingResult) {
-        MemberEntity loginResult = memberService.login(loginRequest);
-        if (loginResult != null){
-            // 로그인 성공
-            session.setAttribute("loginEmail",loginResult.getMemberEmail());
-            return "/main";
-        }else {
+    public String login(@ModelAttribute LoginRequest loginRequest, HttpSession session, Model model, BindingResult bindingResult,
+                        HttpServletRequest httpServletRequest) {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+        model.addAttribute("LoginRequest", new LoginRequest());
+
+        MemberEntity memberEntity = memberService.login(loginRequest);
+        if (memberEntity == null){
             // 로그인 실패
-            model.addAttribute("errorMessage", "로그인 실패. 아이디 또는 비밀번호를 확인하세요.");
+            bindingResult.reject("loginFail", "로그인 아이디 또는 비밀번호가 틀렸습니다.");
+        }if (bindingResult.hasErrors()) {
+            System.out.println(bindingResult.getAllErrors());
+            // 로그인 실패
             return "/members/login";
         }
+        // 로그인 성공 => 세션 성공
+        httpServletRequest.getSession(true);  // Session이 없으면 생성
+        // 세션에 userId를 넣어줌
+        assert memberEntity != null;
+        session.setAttribute("userId", memberEntity.getMno());
+        session.setMaxInactiveInterval(1800); // Session이 30분동안 유지
+
+
+
+        return "redirect:/main";
     }
 
 }

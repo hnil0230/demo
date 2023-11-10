@@ -14,7 +14,7 @@
     <div class="container d-flex justify-content-between align-items-center">
         <!-- 로고 (메인 페이지로 이동) -->
         <div>
-            <a href="/">
+            <a href="/main">
                 <img src="your-logo.png" alt="로고" style="height: 40px;">
             </a>
         </div>
@@ -25,36 +25,20 @@
         </div>
     </div>
 </div>
-<!-- 메뉴 박스 -->
-<div class="container mt-4 text-center">
-    <!-- 메뉴 항목 -->
-    <div class="row justify-content-center">
-        <div class="col-md-2">
-            <a href="#" class="menu-link">뮤지컬</a>
-        </div>
-        <div class="col-md-2">
-            <a href="#" class="menu-link">콘서트</a>
-        </div>
-        <div class="col-md-2">
-            <a href="#" class="menu-link">연극</a>
-        </div>
-        <div class="col-md-2">
-            <a href="#" class="menu-link">클래식/무용</a>
-        </div>
-        <div class="col-md-2">
-            <a href="#" class="menu-link">스포츠</a>
-        </div>
-    </div>
+
 <!-- 로그인 폼 -->
 <div class="container mt-4">
     <h2 class="text-center">로그인</h2>
-    <form th:action="@{/members/login}" method="post" style="max-width: 300px; margin: 0 auto;">
-
+    <form th:action="@{/members/login}" method="post" th:object= "${LoginRequest}" style="max-width: 300px; margin: 0 auto;">
         <div class="form-group">
-            <input type="text" id="email" name="MemberEmail" class="form-control" placeholder="이메일" required>
+            <input type="text" th:field= "*{MemberEmail}" class="form-control" placeholder="이메일" required>
         </div>
         <div class="form-group">
-            <input type="password" id="pw" name="MemberPassword" class="form-control" placeholder="비밀번호" required>
+            <input type="password" th:field= "*{MemberPassword}" class="form-control" placeholder="비밀번호" required>
+        </div>
+        <div th:if= "${#fields.hasGlobalErrors()}">
+            <br/>
+            <div class="error-class" th:each= "error : ${#fields.globalErrors()}" th:text= "${error}"></div>
         </div>
         <button type="submit" class="btn btn-primary btn-block">로그인</button>
     </form>
@@ -62,3 +46,11 @@
 </div>
 </body>
 </html>
+<style>
+    .error-class {
+        color: red;
+    }
+    .error-input {
+        border-color: red;
+    }
+</style>

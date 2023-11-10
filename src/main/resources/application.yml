@@ -8,6 +8,7 @@ spring:
     username: root
     password: root # ??? mysql ????
   thymeleaf:
+    prefix: classpath:/templates/
     cache: false
 
   # spring data jpa ??

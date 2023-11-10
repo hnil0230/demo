@@ -1,24 +1,19 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.MemberEntity;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
-    boolean existsByMemberEmail(String MemberEmail);
-    static Optional<MemberEntity> findByMemberEmail(String MemberEmail) {
-        return null;
-    }
+    boolean existsByMemberEmail(String memberEmail);
 
-    static Optional<MemberEntity> findByMno(Long Mno) {
-        return null;
-    }
+    Optional<MemberEntity> findByMemberEmail(String memberEmail);
+
+    Optional<MemberEntity> findByMno(Long Mno);
 
 
     //MemberEntity save(MemberEntity memberEntity);

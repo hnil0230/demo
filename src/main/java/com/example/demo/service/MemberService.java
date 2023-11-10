@@ -1,19 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.JoinRequest;
-//import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.MemberEntity;
 import com.example.demo.repository.MemberRepository;
-//import com.example.demo.repository.MemoryMemberRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 
 import java.util.Optional;
 
@@ -21,8 +15,9 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
-    public static MemberEntity getLoginUser;
-    private final MemberRepository memberRepository;
+
+    @Autowired
+    public MemberRepository memberRepository;
 //    private final BCryptPasswordEncoder encoder;
 
 
@@ -51,7 +46,7 @@ public class MemberService {
     /**
      * 회원가입 기능
      * 화면에서 JoinRequest(loginId, password, nickname)을 입력받아 User로 변환 후 저장
-     * 비밀번호를 암호화해서 저장
+     * 비밀번호를 암호화해서 저장 req.toMemberEntity(encoder.encode(req.getMemberPassword()));
      * loginId, nickname 중복 체크는 Controller에서 진행 => 에러 메세지 출력을 위해
      */
     public void join(JoinRequest req) {
@@ -60,21 +55,22 @@ public class MemberService {
     }
     /**
      *  로그인 기능`
-     *  화면에서 LoginRequest(loginId, password)을 입력받아 loginId와 password가 일치하면 User return
+     *  화면에서 LoginRequest(loginId, password)을 입력받아 loginId와 password가 일치하면 memberEntity return
      *  loginId가 존재하지 않거나 password가 일치하지 않으면 null return
      */
     public MemberEntity login(LoginRequest req){
-        Optional<MemberEntity> optionalMemberEntity = MemberRepository.findByMemberEmail(req.getLoginId());
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findByMemberEmail(req.getMemberEmail());
+        // Email과 일치하는 User가 없으면 null return
 
         if(optionalMemberEntity.isEmpty()){
             return null;
         }
-        MemberEntity MemberEntity = optionalMemberEntity.get();
-
-        if(!MemberEntity.getMemberPassword().equals(req.getPassword())){
+        MemberEntity memberEntity = optionalMemberEntity.get();
+        // 찾아온 Member의 password와 입력된 password가 다르면 null return
+        if(!memberEntity.getMemberPassword().equals(req.getMemberPassword())){
             return null;
         };
-        return MemberEntity;
+        return memberEntity;
     }
     /**
      * userId(Long)를 입력받아 User을 return 해주는 기능
@@ -83,7 +79,7 @@ public class MemberService {
      * userId로 찾아온 User가 존재하면 User return
      */
     public MemberEntity getLoginUserByMno(Long Mno) {
-        Optional<MemberEntity> optionalUser = MemberRepository.findByMno(Mno);
+        Optional<MemberEntity> optionalUser = memberRepository.findByMno(Mno);
         if (optionalUser.isEmpty()) return null;
 
         return optionalUser.get();
@@ -98,7 +94,7 @@ public class MemberService {
     public MemberEntity getLoginUserByLoginId(String MemberEmail) {
         if(MemberEmail == null) return null;
 
-        Optional<MemberEntity> optionalUser = MemberRepository.findByMemberEmail(MemberEmail);
+        Optional<MemberEntity> optionalUser = memberRepository.findByMemberEmail(MemberEmail);
         if(optionalUser.isEmpty()) return null;
 
         return optionalUser.get();

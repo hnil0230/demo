@@ -15,7 +15,7 @@ public class MemberEntity { //table 역할
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Mno;
+    private Long mno;
     @Column
     private String memberPassword;
     @Column
