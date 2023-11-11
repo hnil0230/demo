@@ -99,6 +99,17 @@ public class MemberController {
 
         return "redirect:/main";
     }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, Model model) {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+
+        HttpSession session = request.getSession(false);  // Session이 없으면 null return
+        if(session != null) {
+            session.invalidate();
+        }
+        return "redirect:/members/login";
+    }
 
 }
 
