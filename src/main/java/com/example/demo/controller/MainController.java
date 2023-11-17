@@ -21,16 +21,9 @@ public class MainController {
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
 
-        if(userId == null) {
-            System.out.println("로그인 하지 않음");
-        }
-        else {
-            System.out.println("로그인 유저의 Id : " + userId);
-        }
-
         MemberEntity loginUser = memberService.getLoginUserByMno(userId);
         if(loginUser != null) {
-            model.addAttribute("nickname", loginUser.getMemberName());
+            model.addAttribute("name", loginUser.getMemberName());
         }
 
         return "/main";

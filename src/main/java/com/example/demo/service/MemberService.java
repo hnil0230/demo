@@ -18,7 +18,6 @@ public class MemberService {
 
     @Autowired
     public MemberRepository memberRepository;
-//    private final BCryptPasswordEncoder encoder;
 
 
 

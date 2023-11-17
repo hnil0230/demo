@@ -17,6 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 @RequiredArgsConstructor
@@ -109,6 +110,52 @@ public class MemberController {
             session.invalidate();
         }
         return "redirect:/members/login";
+    }
+
+    @GetMapping("/mypage")
+    public String mypage(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+
+
+        MemberEntity loginUser = memberService.getLoginUserByMno(userId);
+
+        if(loginUser != null) {
+            model.addAttribute("name", loginUser.getMemberName());
+            model.addAttribute("email", loginUser.getMemberEmail());
+            model.addAttribute("role", loginUser.getRole());
+        }
+        return "/mypage";
+    }
+    @GetMapping("/changePassword")
+    public String changePassword(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+
+
+        MemberEntity loginUser = memberService.getLoginUserByMno(userId);
+
+        if(loginUser != null) {
+            model.addAttribute("name", loginUser.getMemberName());
+            model.addAttribute("email", loginUser.getMemberEmail());
+            model.addAttribute("role", loginUser.getRole());
+        }
+        return "/changepassword";
+    }
+    @GetMapping("/recentBooking")
+    public String recentBooking(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+
+
+        MemberEntity loginUser = memberService.getLoginUserByMno(userId);
+
+        if(loginUser != null) {
+            model.addAttribute("name", loginUser.getMemberName());
+            model.addAttribute("email", loginUser.getMemberEmail());
+            model.addAttribute("role", loginUser.getRole());
+        }
+        return "/recentBooking";
     }
 
 }
