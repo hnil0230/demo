@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ChangePasswordRequest;
 import com.example.demo.dto.JoinRequest;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.MemberEntity;
@@ -97,6 +98,30 @@ public class MemberService {
         if(optionalUser.isEmpty()) return null;
 
         return optionalUser.get();
+    }
+    /**
+     * 비밀번호 변경 기능
+     * 현재 이메일에 맞는 비밀번호인지 확인
+     * 비밀번호와 비밀번호 확인이 같은지 확인
+     */
+    public boolean changePassword(ChangePasswordRequest req){
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findByMemberEmail(req.getMemberEmail());
+
+        if(optionalMemberEntity.isPresent()) {
+            MemberEntity memberEntity = optionalMemberEntity.get();
+            // 찾아온 Member의 password와 입력된 현재 password가 일치하는지 확인
+            if(memberEntity.getMemberPassword().equals(req.getCurrentPassword())){
+                // 새 비밀번호와 비밀번호 확인이 같은지 확인
+                if(req.getMemberPassword().equals(req.getMemberPasswordCheck())) {
+                    // 새 비밀번호로 업데이트
+                    memberEntity.setMemberPassword(req.getMemberPassword());
+                    // 변경된 정보를 데이터베이스에 저장
+                    memberRepository.save(memberEntity);
+                    return true; // 변경된 MemberEntity 반환
+                }
+            }
+        }
+        return false; // 조건에 부합하지 않을 경우 null 반환
     }
 
 

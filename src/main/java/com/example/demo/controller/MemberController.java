@@ -3,6 +3,7 @@ package com.example.demo.controller;
 //import com.example.demo.domain.Member;
 //import com.example.demo.dto.MemberDTO;
 
+import com.example.demo.dto.ChangePasswordRequest;
 import com.example.demo.dto.JoinRequest;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.MemberEntity;
@@ -114,6 +115,10 @@ public class MemberController {
 
     @GetMapping("/mypage")
     public String mypage(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
+        if (userId == null) {
+            // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
+            return "redirect:/login";
+        }
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
 
@@ -129,18 +134,36 @@ public class MemberController {
     }
     @GetMapping("/changePassword")
     public String changePassword(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
+        if (userId == null) {
+            // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
+            return "redirect:/login";
+        }
+
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
+
+        return "changePassword";
+    }
+    @PostMapping("/changePassword")
+    public String changePasswordSubmit(@ModelAttribute ChangePasswordRequest changePasswordRequest, Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
+        if (userId == null) {
+            // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
+            return "redirect:/login";
+        }
+
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
 
+        boolean isChanged = memberService.changePassword(changePasswordRequest);
 
-        MemberEntity loginUser = memberService.getLoginUserByMno(userId);
-
-        if(loginUser != null) {
-            model.addAttribute("name", loginUser.getMemberName());
-            model.addAttribute("email", loginUser.getMemberEmail());
-            model.addAttribute("role", loginUser.getRole());
+        if (isChanged) {
+            model.addAttribute("message", "비밀번호가 변경되었습니다.");
+            return "passwordChangeSuccess";
+        } else {
+            model.addAttribute("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+            return "changePassword";
         }
-        return "/changepassword";
     }
     @GetMapping("/recentBooking")
     public String recentBooking(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
