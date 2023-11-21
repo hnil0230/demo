@@ -14,7 +14,7 @@ public class MemberEntity { //table 역할
     //jpa ==> database를 객체처럼 사용 가능
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mno;
     @Column
     private String memberPassword;

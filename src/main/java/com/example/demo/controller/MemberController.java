@@ -30,8 +30,8 @@ public class MemberController {
     public String createFrom(Model model) {
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
-
         model.addAttribute("joinRequest", new JoinRequest());
+
         return "/members/createAccount";
     }
     @PostMapping("/members/new")
@@ -58,15 +58,9 @@ public class MemberController {
     }
 
 
-/*    @GetMapping("/members")
-    public String list(Model model) {
-        List<Member> members = memberService.findMembers();
-        model.addAttribute("members", members);
-        return  "members/memberList";
-    }*/
-
     @GetMapping("/members/login")
     public String loginForm(Model model) {
+
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
         model.addAttribute("LoginRequest", new LoginRequest());
@@ -113,11 +107,11 @@ public class MemberController {
         return "redirect:/members/login";
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("/members/mypage")
     public String mypage(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
         if (userId == null) {
             // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
-            return "redirect:/login";
+            return "redirect:/members/login";
         }
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
@@ -130,42 +124,52 @@ public class MemberController {
             model.addAttribute("email", loginUser.getMemberEmail());
             model.addAttribute("role", loginUser.getRole());
         }
-        return "/mypage";
+        return "/members/mypage";
     }
-    @GetMapping("/changePassword")
+    @GetMapping("/members/changePassword")
     public String changePassword(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
         if (userId == null) {
             // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
-            return "redirect:/login";
+            return "redirect:/members/login";
         }
 
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
         model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
+        model.addAttribute("joinRequest", new JoinRequest());
+        MemberEntity loginUser = memberService.getLoginUserByMno(userId);
+        if(loginUser != null) {
+            model.addAttribute("name", loginUser.getMemberName());
+        }
 
-        return "changePassword";
+        return "/members/changePassword";
     }
-    @PostMapping("/changePassword")
+    @PostMapping("/members/changePassword")
     public String changePasswordSubmit(@ModelAttribute ChangePasswordRequest changePasswordRequest, Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
         if (userId == null) {
             // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
-            return "redirect:/login";
+            return "redirect:/members/login";
         }
 
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
 
-        boolean isChanged = memberService.changePassword(changePasswordRequest);
+        MemberEntity loginUser = memberService.getLoginUserByMno(userId);
+        if(loginUser != null) {
+            model.addAttribute("name", loginUser.getMemberName());
+        }
+
+        boolean isChanged = memberService.changePassword(changePasswordRequest, loginUser);
 
         if (isChanged) {
             model.addAttribute("message", "비밀번호가 변경되었습니다.");
-            return "passwordChangeSuccess";
+            return "/members/mypage";
         } else {
             model.addAttribute("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
-            return "changePassword";
+            return "/members/changePassword";
         }
     }
-    @GetMapping("/recentBooking")
+    @GetMapping("/booking/recentBooking")
     public String recentBooking(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
@@ -178,7 +182,7 @@ public class MemberController {
             model.addAttribute("email", loginUser.getMemberEmail());
             model.addAttribute("role", loginUser.getRole());
         }
-        return "/recentBooking";
+        return "/booking/recentBooking";
     }
 
 }

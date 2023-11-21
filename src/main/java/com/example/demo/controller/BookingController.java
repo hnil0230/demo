@@ -1,21 +1,35 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ChangePasswordRequest;
+import com.example.demo.dto.JoinRequest;
+import com.example.demo.entity.MemberEntity;
 import com.example.demo.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 @RequiredArgsConstructor
 public class BookingController {
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
+    @GetMapping("/booking/seatChoose")
+    public String seat(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
+        if (userId == null) {
+            // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
+            return "redirect:/members/login";
+        }
 
-/*    @GetMapping("/search")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
-        List<ResearchDAO> rsearchResults = boardService.searchResearchByKeyword(keyword);
-        model.addAttribute("postList", rsearchResults);
-        return "/search-results.html"; // 검색 결과를 나타낼 HTML 페이지의 이름
-    }*/
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
+        model.addAttribute("joinRequest", new JoinRequest());
+        MemberEntity loginUser = memberService.getLoginUserByMno(userId);
+        if(loginUser != null) {
+            model.addAttribute("name", loginUser.getMemberName());
+        }
 
+        return "/booking/concertSelect";
+    }
 }
