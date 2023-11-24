@@ -16,13 +16,4 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByMno(Long Mno);
 
 
-    //MemberEntity save(MemberEntity memberEntity);
-    /*Optional<MemberEntity> findByMno(Long Mno);
-    Optional<MemberEntity> findByMId(String Mid);
-    Optional<MemberEntity> findByMEmail(String Memail);
-
-    Optional<MemberEntity> findByMName(String Mname);
-
-    List<MemberEntity> findAll();*/
-
 }

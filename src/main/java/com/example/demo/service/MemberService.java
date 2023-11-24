@@ -23,18 +23,6 @@ public class MemberService {
 
 
     /**
-     * 회원가입
-     */
-//    public String save (MemberDTO memberDTO) {
-//        MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
-//        Optional<MemberEntity> existingMember = memberRepository.findByMemberEmail(memberDTO.getMemberEmail());
-//        if (existingMember.isPresent()) {
-//            return "이미 존재하는 회원입니다.";
-//        }
-//        memberRepository.save(memberEntity);
-//        return null;
-//    }
-    /**
      * Email 중복 체크
      * 회원가입 기능 구현 시 사용
      * 중복되면 true return
@@ -109,9 +97,9 @@ public class MemberService {
             // 찾아온 Member의 password와 입력된 현재 password가 일치하는지 확인
             if(memberEntity.getMemberPassword().equals(req.getCurrentPassword())){
                 // 새 비밀번호와 비밀번호 확인이 같은지 확인
-                if(req.getNewPassword().equals(req.getNewPasswordCheck())) {
+                if(req.getMemberPassword().equals(req.getMemberPasswordCheck())) {
                     // 새 비밀번호로 업데이트
-                    memberEntity.setMemberPassword(req.getNewPassword());
+                    memberEntity.setMemberPassword(req.getMemberPassword());
                     // 변경된 정보를 데이터베이스에 저장
                     memberRepository.save(memberEntity);
                     return true; // 변경된 MemberEntity 반환

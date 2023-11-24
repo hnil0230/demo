@@ -7,13 +7,14 @@
     <title>최근 예매 내역</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
         body {
           font-family: 'Noto Sans KR', sans-serif;
         }
-        .container {
+        .containers {
             padding: 80px 120px;
         }
         .dev {
@@ -72,6 +73,7 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
+            margin-top: 70px;
         }
         .container {
             width: 80%;
@@ -132,62 +134,38 @@
             <ul class="nav navbar navbar-right">
                 <a th:href="|/${loginType}|"></a>
                 <div th:if="${name == null}">
-                    <a href="/members/login" class="nav-item">로그인</a>
-                    <a>/</a>
-                    <a href="/members/new" class="nav-item">회원가입</a>
+                    <a href="/members/login" class="btn btn-primary mr-2">로그인</a>
+                    <a href="/members/new" class="btn btn-primary mr-2">회원가입</a>
                 </div>
                 <div th:unless="${name == null}">
                     <a>[[${name}]]님 환영합니다!</a>
-                    <a href="/logout" class="nav-item">로그아웃</a>
-                    <a>/</a>
-                    <a href="/members/mypage" class="nav-item">마이페이지</a>
+                    <a href="/logout" class="btn btn-primary mr-2">로그아웃</a>
+                    <a href="/members/mypage" class="btn btn-primary mr-2">마이페이지</a>
                 </div>
             </ul>
         </div>
     </div>
 </nav>
 <div class="container">
-    <div class="header">
-        <h1>나의 최근 예매 내역</h1>
-    </div>
-    <table>
+    <h2>[[${name}]]님의 예매 내역</h2>
+    <table class="table table-bordered">
+        <thead>
         <tr>
-            <th>예매일</th>
-            <th>예약 번호</th>
-            <th>공연명</th>
-            <th>관람일</th>
+            <th>예매 번호</th>
             <th>좌석 번호</th>
+            <th>가격</th>
+            <th>공연 ID</th>
         </tr>
-        <!-- 예매 내역은 여기에 동적으로 추가됩니다. -->
+        </thead>
+        <tbody>
+        <tr th:each="ticket : ${tickets}">
+            <td th:text="${ticket.ticket_id}"></td>
+            <td th:text="${ticket.ticket_seat_num}"></td>
+            <td th:text="${ticket.ticket_price}"></td>
+            <td th:text="${ticket.sid}"></td>
+        </tr>
+        </tbody>
     </table>
 </div>
-
-<script>
-    // 서버에서 최근 예매 내역을 가져오는 코드 (AJAX 또는 fetch 사용)
-    // 예매 내역 데이터는 bookings 변수에 할당합니다.
-    const bookings = [
-        { date: '2023-09-01', reservationNumber: '12345', event: '콘서트 A', showDate: '2023-09-10', seatNumber: 'A1' },
-        { date: '2023-09-10', reservationNumber: '54321', event: '콘서트 B', showDate: '2023-09-20', seatNumber: 'B2' },
-        { date: '2023-09-20', reservationNumber: '98765', event: '콘서트 C', showDate: '2023-09-30', seatNumber: 'C3' },
-    ];
-
-    const table = document.querySelector('table');
-
-    // 최근 예매 내역을 표에 추가
-    bookings.forEach((booking) => {
-        const row = table.insertRow(-1);
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        const cell3 = row.insertCell(2);
-        const cell4 = row.insertCell(3);
-        const cell5 = row.insertCell(4);
-
-        cell1.innerHTML = booking.date;
-        cell2.innerHTML = booking.reservationNumber;
-        cell3.innerHTML = booking.event;
-        cell4.innerHTML = booking.showDate;
-        cell5.innerHTML = booking.seatNumber;
-    });
-</script>
 </body>
 </html>

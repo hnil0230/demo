@@ -23,8 +23,8 @@ public class ChangePasswordRequest {
     private String CurrentPassword;
     @NotBlank(message = "비밀번호가 비어있습니다.")
     @Size(min = 1, max = 30, message = "비밀번호는 1 ~ 30자 이여야 합니다!")
-    private String NewPassword;
-    private String NewPasswordCheck;
+    private String MemberPassword;
+    private String MemberPasswordCheck;
 
     public MemberEntity toMemberEntity(String encodedPassword) {
         return MemberEntity.builder()

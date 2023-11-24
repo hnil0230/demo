@@ -7,7 +7,9 @@ import com.example.demo.dto.ChangePasswordRequest;
 import com.example.demo.dto.JoinRequest;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.MemberEntity;
+import com.example.demo.entity.TicketEntity;
 import com.example.demo.service.MemberService;
+import com.example.demo.service.TicketService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-
+    private final TicketService ticketService;
 
     @GetMapping("/members/new")
     public String createFrom(Model model) {
@@ -163,7 +167,7 @@ public class MemberController {
 
         if (isChanged) {
             model.addAttribute("message", "비밀번호가 변경되었습니다.");
-            return "/members/mypage";
+            return "/main";
         } else {
             model.addAttribute("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
             return "/members/changePassword";
@@ -174,9 +178,15 @@ public class MemberController {
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
 
-
         MemberEntity loginUser = memberService.getLoginUserByMno(userId);
-
+        if (userId != null) {
+            // 사용자 ID를 사용하여 티켓 목록을 가져옴
+            List<TicketEntity> tickets = ticketService.getTicketsByMno(userId);
+            model.addAttribute("tickets", tickets);
+        } else {
+            // 사용자가 로그인하지 않은 경우, 로그인 페이지로 리디렉션
+            return "redirect:/members/login";
+        }
         if(loginUser != null) {
             model.addAttribute("name", loginUser.getMemberName());
             model.addAttribute("email", loginUser.getMemberEmail());
